@@ -1,48 +1,80 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import {
+  fetchTasks,
+  toggleCompletion,
+  deleteTask,
+} from "../../actions/taskActions";
 
-const TaskList = ({ tasks, toggleComplete, deleteTask, toggleDescription }) => {
+const TaskList = ({
+  tasks,
+  fetchTasks,
+  toggleCompletion,
+  deleteTask,
+  actionId,
+}) => {
+  const [showDesc, setShowDesc] = useState(false);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks, actionId]);
+
+  const handleToggleCompletion = (taskId) => {
+    toggleCompletion(taskId);
+    window.location.reload();
+  };
+
+  const handleDeleteTask = (taskId) => {
+    deleteTask(taskId);
+    window.location.reload();
+  };
+
+  const handleToggleDescription = (taskId) => {
+    tasks.map((task) =>
+      task._id === taskId ? setShowDesc(!showDesc) : showDesc
+    );
+  };
   return (
     <ul className="list-group">
       {tasks.map((task) => (
-        <li
-          className={`list-group-item ${task.completed ? 'completed' : ''}`}
-          key={task.id}
-        >
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
+        <li className="list-group-item" key={task._id}>
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="form-check">
               <input
+                className="form-check-input"
                 type="checkbox"
                 checked={task.completed}
-                onChange={() => toggleComplete(task.id)}
+                onChange={() => handleToggleCompletion(task._id)}
               />
-              <span
-                className="task-name ms-2 text-truncate"
-                onClick={() => toggleComplete(task.id)}
-              >
-                {task.name.length > 90 ? `${task.name.slice(0, 50)}...` : task.name}
-              </span>
+              <label className="form-check-label">
+                {task.name.length > 50
+                  ? task.name.substr(0, 50) + "..."
+                  : task.name}
+              </label>
             </div>
-            <div>
-              <button
-                className="btn btn-sm btn-secondary me-2"
-                onClick={() => toggleDescription(task.id)}
-              >
-                {task.showDescription ? 'Hide Description' : 'Show Description'}
-              </button>
-              <button
-                className="btn btn-link text-danger"
-                onClick={() => deleteTask(task.id)}
-              >
-                <i className="bi bi-trash"></i>
-              </button>
+            <div className="task-icons">
+              <i
+                className="bi bi-eye-fill"
+                onClick={() => handleToggleDescription(task._id)}
+              ></i>
+              <i
+                className="bi bi-trash-fill px-4"
+                onClick={() => handleDeleteTask(task._id)}
+              ></i>
             </div>
           </div>
-          {task.showDescription && (
-            <div className="mt-2">
-                <hr />
-              <p style={{ overflow: 'visible' }}>TITLE: {task.name}</p>
-              <p style={{ overflow: 'visible' }}>{task.description}</p>
-            </div>
+          {showDesc && (
+           <div style={{ border: '0.5px solid', padding: '10px' }}>
+           <hr />
+           <p style={{ fontSize: '1.2rem'}}>
+           <span className="fw-bold">Title :</span>  {task.name}
+           </p>
+           <p className="fw-bold">Description:</p>
+           <div style={{ wordWrap: 'break-word' }}>
+             {task.description}
+           </div>
+         </div>
+  
           )}
         </li>
       ))}
@@ -50,4 +82,14 @@ const TaskList = ({ tasks, toggleComplete, deleteTask, toggleDescription }) => {
   );
 };
 
-export default TaskList;
+const mapStateToProps = (state) => ({
+  tasks: state.tasks,
+});
+
+const mapDispatchToProps = {
+  fetchTasks,
+  toggleCompletion,
+  deleteTask,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
