@@ -83,7 +83,7 @@ const TaskList = ({
             </div>
           </div>
           {openTaskIds.includes(task._id)  && (
-            <div style={{ border: '0.5px solid', padding: '10px' }}>
+            <div style={{ border: '0.5px solid',wordWrap: 'break-word', padding: '10px' }}>
               <hr />
               <p style={{ fontSize: '1.2rem' }}>
                 <span className="fw-bold">Title: </span> {task.name}
