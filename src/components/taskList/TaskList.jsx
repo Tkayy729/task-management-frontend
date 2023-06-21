@@ -11,15 +11,17 @@ const TaskList = ({
   fetchTasks,
   toggleCompletion,
   deleteTask,
-  actionId,
 }) => {
+
+  const [openTaskIds, setOpenTaskIds] = useState([]);
+
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks, actionId]);
+  }, [fetchTasks]);
 
   const handleToggleCompletion = (taskId) => {
     toggleCompletion(taskId);
-    window.location.reload();
+   window.location.reload();
   };
 
   const handleDeleteTask = (taskId) => {
@@ -27,7 +29,6 @@ const TaskList = ({
     window.location.reload();
   };
 
-  const [openTaskIds, setOpenTaskIds] = useState([]);
 
   const handleToggleDescription = (taskId) => {
     if (openTaskIds.includes(taskId)) {
@@ -38,8 +39,13 @@ const TaskList = ({
   };
 
   return (
+    <div>
+   <h3 className="fw-bold text-center">Tasks List</h3>
     <ul className="list-group">
-      {tasks.map((task) => (
+      {
+        tasks.length === 0 && <p className="text-success text-center">add your first task with the form above ...</p>
+      }
+      {tasks.length > 0 && tasks.map((task) => (
         <li className="list-group-item" key={task._id}>
           <div className="d-flex align-items-center justify-content-between">
             <div className="form-check">
@@ -91,6 +97,7 @@ const TaskList = ({
         </li>
       ))}
     </ul>
+    </div>
   );
 };
 
