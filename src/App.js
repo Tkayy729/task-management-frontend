@@ -7,7 +7,7 @@ const App = () => {
 
 
   return (
-    <div className="container">
+    <div className="container p-5">
       <h1>Task Manager</h1>
       <TaskForm  />
       <TaskList />

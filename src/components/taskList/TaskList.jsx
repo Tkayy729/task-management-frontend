@@ -13,8 +13,6 @@ const TaskList = ({
   deleteTask,
   actionId,
 }) => {
-  const [showDesc, setShowDesc] = useState(false);
-
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks, actionId]);
@@ -29,11 +27,16 @@ const TaskList = ({
     window.location.reload();
   };
 
+  const [openTaskIds, setOpenTaskIds] = useState([]);
+
   const handleToggleDescription = (taskId) => {
-    tasks.map((task) =>
-      task._id === taskId ? setShowDesc(!showDesc) : showDesc
-    );
+    if (openTaskIds.includes(taskId)) {
+      setOpenTaskIds(openTaskIds.filter((id) => id !== taskId));
+    } else {
+      setOpenTaskIds([...openTaskIds, taskId]);
+    }
   };
+
   return (
     <ul className="list-group">
       {tasks.map((task) => (
@@ -46,11 +49,21 @@ const TaskList = ({
                 checked={task.completed}
                 onChange={() => handleToggleCompletion(task._id)}
               />
-              <label className="form-check-label">
-                {task.name.length > 50
-                  ? task.name.substr(0, 50) + "..."
-                  : task.name}
-              </label>
+              <>
+                {task.completed ? (
+                  <label className="form-check-label text-decoration-line-through">
+                    {task.name.length > 50
+                      ? task.name.substr(0, 50) + "..."
+                      : task.name}
+                  </label>
+                ) : (
+                  <label className="form-check-label">
+                    {task.name.length > 50
+                      ? task.name.substr(0, 50) + "..."
+                      : task.name}
+                  </label>
+                )}
+              </>
             </div>
             <div className="task-icons">
               <i
@@ -63,18 +76,17 @@ const TaskList = ({
               ></i>
             </div>
           </div>
-          {showDesc && (
-           <div style={{ border: '0.5px solid', padding: '10px' }}>
-           <hr />
-           <p style={{ fontSize: '1.2rem'}}>
-           <span className="fw-bold">Title :</span>  {task.name}
-           </p>
-           <p className="fw-bold">Description:</p>
-           <div style={{ wordWrap: 'break-word' }}>
-             {task.description}
-           </div>
-         </div>
-  
+          {openTaskIds.includes(task._id)  && (
+            <div style={{ border: '0.5px solid', padding: '10px' }}>
+              <hr />
+              <p style={{ fontSize: '1.2rem' }}>
+                <span className="fw-bold">Title: </span> {task.name}
+              </p>
+              <p className="fw-bold">Description:</p>
+              <div style={{ wordWrap: 'break-word' }}>
+                {task.description}
+              </div>
+            </div>
           )}
         </li>
       ))}
