@@ -15,12 +15,12 @@ const TaskList = ({ tasks, fetchTasks, toggleCompletion, deleteTask }) => {
 
   const handleToggleCompletion = (taskId) => {
     toggleCompletion(taskId);
-    window.location.reload();
+    //window.location.reload();
   };
 
   const handleDeleteTask = (taskId) => {
     deleteTask(taskId);
-    window.location.reload();
+    //window.location.reload();
   };
 
   const handleToggleDescription = (taskId) => {
