@@ -11,7 +11,7 @@ const TaskList = ({ tasks, fetchTasks, toggleCompletion, deleteTask }) => {
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+  }, []);
 
   const handleToggleCompletion = (taskId) => {
     toggleCompletion(taskId);
